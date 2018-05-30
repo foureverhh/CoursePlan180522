@@ -102,7 +102,7 @@ public class CourseService{
      }
 
      public List<Course> getCourseByCourseAndStudentId(String courseId,String studentId){
-         System.out.println("getCourseByCourseIdAndStudentId");
+
          if(courseId.equals(""))
              return courses;
          else {
