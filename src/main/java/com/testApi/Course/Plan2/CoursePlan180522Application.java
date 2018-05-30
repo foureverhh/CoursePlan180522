@@ -13,6 +13,4 @@ public class CoursePlan180522Application {
 	public static void main(String[] args) {
 		SpringApplication.run(CoursePlan180522Application.class, args);
 	}
-
-
 }

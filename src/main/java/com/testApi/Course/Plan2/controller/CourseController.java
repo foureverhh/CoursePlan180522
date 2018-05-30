@@ -13,29 +13,18 @@ public class CourseController {
     @Autowired
     private CourseService courseService = new CourseService();
 
-  @RequestMapping(value = "/courses",method = RequestMethod.GET)
+    @RequestMapping(value = "/courses",method = RequestMethod.GET)
     public List<Course>  findCourses(){
         return courseService.getCourses();
     }
 
- //Get course by searching course id
+    //Get course by searching course id
     @RequestMapping(value = "/courses/{courseId}",method = RequestMethod.GET)
-    public Course findCourseById(@PathVariable String courseId) throws IOException {
+    public Course findCourseById(@PathVariable String courseId){
             return courseService.getCourseByCourseId(courseId);
 
     }
-
-   //Check whether a student has course a course
-    @RequestMapping(value = "/courses/{courseId}/{studentId}",method = RequestMethod.GET)
-    public List<Course> findCourseByCourseIdAndStudentId(@PathVariable(value = "courseId") String courseId, @PathVariable(value = "studentId") String studentId){
-        return courseService.getCourseByCourseAndStudentId(courseId,studentId);
-    }
-   /* @RequestMapping(value = "/courses",method = RequestMethod.GET)
-    public List<Course> findCourseByStudentId(@RequestParam(value ="studentId",defaultValue = "") String studentId){
-        return  courseService.getCourseByStudentId(studentId);
-    }*/
-
-    @RequestMapping(value ="/courses",method = RequestMethod.POST)
+ @RequestMapping(value ="/courses",method = RequestMethod.POST)
     public void addCourse (@RequestBody Course course){
         courseService.addCourse(course);
     }
@@ -49,4 +38,16 @@ public class CourseController {
     public void removeCourse(@PathVariable String courseId){
         courseService.removeCourse(courseId);
     }
+
 }
+
+   /*//Check whether a student has course a course
+    @RequestMapping(value = "/courses/{courseId}/{studentId}",method = RequestMethod.GET)
+    public List<Course> findCourseByCourseIdAndStudentId(@PathVariable(value = "courseId") String courseId, @PathVariable(value = "studentId") String studentId){
+        return courseService.getCourseByCourseAndStudentId(courseId,studentId);
+    }*/
+  /* @RequestMapping(value = "/courses",method = RequestMethod.GET)
+    public List<Course> findCourseByStudentId(@RequestParam(value ="studentId",defaultValue = "") String studentId){
+        return  courseService.getCourseByStudentId(studentId);
+    }
+*/

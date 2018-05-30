@@ -15,15 +15,8 @@ import java.util.*;
 @Service
 public class CourseService{
 
-   //private StudentService studentService = new StudentService();
     private List<Course> courses;
 
-
-/*    private List<Course> courses = new ArrayList<>(Arrays.asList(
-            new Course("c1","java","monday","teacher1","classroom1",studentService.getStudentsJava()),
-            new Course("c2","c","tuesday","teacher2","classroom2",studentService.getStudentsC()),
-            new Course("c3","c++","wednesday","teacher3","classroom3",studentService.getStudentsCPlus())
-    ));*/
 
    public CourseService() {
         courses = new ArrayList<>();
@@ -70,22 +63,22 @@ public class CourseService{
             return courses;
         }
 
-     public Course getCourseByCourseId(String courseId) throws IOException {
+     public Course getCourseByCourseId(String courseId)  {
 
          System.out.println("getCourseByCourseID");
          Course c = new Course();
          for(Course course : courses){
-             if(course.getId().equals(courseId))
+             if(course.getId().equals(courseId)) {
                  c = course;
+                 selectOneCourse(c);
+             }
          }
-         //Save the course
-           // saveOneCourse(c);
          return c;
      }
-     //To check how many courses a student have chosen
+
+ /*    //To check how many courses a student have chosen
     public List<Course> getCourseByStudentId (String studentId){
 
-         System.out.println("getCourseByStudentID");
          if(studentId.equals("")){
              return courses;
          }
@@ -120,7 +113,7 @@ public class CourseService{
              return cs;
          }
      }
-
+*/
     public void addCourse(Course course) {
         addOneCourse(course);
         saveAllCourses();
@@ -132,19 +125,50 @@ public class CourseService{
          for(int i=0;i<courses.size();i++){
             if (courses.get(i).getId().equals(courseId))
                 courses.set(i,course);
+            updateOneCourse(course);
          }
+         saveAllCourses();
     }
 
     public void removeCourse(String courseId) {
          for(Course c : courses){
-             if(c.getId().equals(courseId))
-                 courses.remove(c);
+             if(c.getId().equals(courseId)) {
+                 removeOneCourse(c);
+             }
          }
+        courses.removeIf(t->t.getId().equals(courseId));
+         saveAllCourses();
+
+    }
+
+    public void selectOneCourse(Course course){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id",course.getId());
+        jsonObject.put("name",course.getName());
+        jsonObject.put("time",course.getTime());
+        jsonObject.put("teachers",course.getTeachers());
+        jsonObject.put("classroom",course.getClassroom());
+        JSONArray jsonArray = new JSONArray();
+        for(Student student : course.getStudents()){
+            JSONObject object = new JSONObject();
+            object.put("id",student.getId());
+            object.put("name",student.getName());
+            object.put("email",student.getEmail());
+            jsonArray.add(object);
+        }
+        jsonObject.put("students",jsonArray);
+        try {
+            FileWriter fileWriter = new FileWriter("selectedCourse.txt",true);
+            fileWriter.write(jsonObject.toJSONString()+"\n");
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addOneCourse(Course course){
         try {
-            FileWriter fileWriter = new FileWriter("NewCourse.txt");
+            FileWriter fileWriter = new FileWriter("AddedCourse.txt",true);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id",course.getId());
             jsonObject.put("name",course.getName());
@@ -158,6 +182,7 @@ public class CourseService{
                 studentObj.put("name",student.getName());
                 studentObj.put("email",student.getEmail());
                 students.add(studentObj);
+
             }
             jsonObject.put("students",students);
             fileWriter.write(jsonObject.toJSONString()+"\n");
@@ -167,6 +192,57 @@ public class CourseService{
             e.printStackTrace();
         }
     }
+
+    public void updateOneCourse(Course course){
+       JSONObject jsonObject = new JSONObject();
+       jsonObject.put("id",course.getId());
+       jsonObject.put("name",course.getName());
+       jsonObject.put("time",course.getTime());
+       jsonObject.put("teachers",course.getTeachers());
+       jsonObject.put("classroom",course.getClassroom());
+       JSONArray jsonArray = new JSONArray();
+       for(Student student : course.getStudents()){
+           JSONObject object = new JSONObject();
+           object.put("id",student.getId());
+           object.put("name",student.getName());
+           object.put("email",student.getEmail());
+           jsonArray.add(object);
+       }
+       jsonObject.put("students",jsonArray);
+        try {
+            FileWriter fileWriter = new FileWriter("UpdatedCourse.txt",true);
+            fileWriter.write(jsonObject.toJSONString()+"\n");
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeOneCourse(Course course){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id",course.getId());
+        jsonObject.put("name",course.getName());
+        jsonObject.put("time",course.getTime());
+        jsonObject.put("teachers",course.getTeachers());
+        jsonObject.put("classroom",course.getClassroom());
+        JSONArray jsonArray = new JSONArray();
+        for(Student student : course.getStudents()){
+            JSONObject object = new JSONObject();
+            object.put("id",student.getId());
+            object.put("name",student.getName());
+            object.put("email",student.getEmail());
+            jsonArray.add(object);
+        }
+        jsonObject.put("students",jsonArray);
+        try {
+            FileWriter fileWriter = new FileWriter("RemovedCourse.txt",true);
+            fileWriter.write(jsonObject.toJSONString()+"\n");
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void saveAllCourses() {
 
         System.out.println("save all courses");

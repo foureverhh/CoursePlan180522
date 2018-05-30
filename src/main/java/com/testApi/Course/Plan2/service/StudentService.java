@@ -21,24 +21,18 @@ import java.util.Scanner;
 public class StudentService {
 
     private List<Student> students;
- /*   private List<Student> students = new ArrayList<>(Arrays.asList(
-            new Student("s1","student1","student1@gmail.com"),
-            new Student("s2","student2","student2@gmail.com"),
-            new Student("s3","student3","student3@gmail.com"),
-            new Student("s4","student4","student4@gmail.com"),
-            new Student("s6","student6","student6@gmail.com")
-    ));*/
+
 
 
    public  StudentService (){
-       System.out.println("run");
+
        //Read java string from txt file
      students = new ArrayList<>();
        try {
          Scanner  fileScanner = new Scanner(new File("Students.txt"));
            while(fileScanner.hasNextLine()){
                String origin = fileScanner.nextLine();
-               System.out.println("Origin String is "+origin);
+
                //Parse java string to json
                JSONParser parser = new JSONParser();
                try{
@@ -69,33 +63,6 @@ public class StudentService {
         return students;
     }
 
-   private List<Student> studentsJava =new ArrayList<>(Arrays.asList(
-           new Student("s2","student 2","student2@gmail.com"),
-           new Student("s4","student 4","student4@gmail.com")
-   ));
-
-   public List<Student> getStudentsJava(){
-      return studentsJava;
-   }
-
-    private List<Student>  studentsC = new ArrayList<>(Arrays.asList(
-            new Student("s1","student 1","student1@gmail.com"),
-            new Student("s3","student 3","student3@gmail.com")
-    ));
-
-    public List<Student> getStudentsC(){
-        return studentsC;
-    }
-
-    private List<Student>  studentsCPlus =new ArrayList<>(Arrays.asList(
-            new Student("s1","student 1","student1@gmail.com"),
-            new Student("s2","student 2","student2@gmail.com"),
-            new Student("s3","student 3","student3@gmail.com")
-    ));
-
-    public List<Student> getStudentsCPlus(){
-        return studentsCPlus;
-    }
 
     public Student getStudentById(String id){
         Student s = new Student();
@@ -111,7 +78,7 @@ public class StudentService {
     public void addStudent(Student student) {
         students.add(student);
         saveOneStudentByPost(student);
-        saveAllStudents();
+
     }
 
     public void updateStudent(String studentId,Student student) {
@@ -121,15 +88,15 @@ public class StudentService {
                students.set(i,student);
                saveOneStudentByUpdate(s);
        }
-       saveAllStudents();
-
     }
 
     public void removeStudent(String studentId) {
-        for(Student student : students){
-            if(student.getId().equals(studentId))
-                students.remove(student);
+      for(Student student : students){
+            if(student.getId().equals(studentId)) {
+                removeOneStudent(student);
+            }
         }
+      students.removeIf(t->t.getId().equals(studentId));
         saveAllStudents();
     }
 
@@ -139,10 +106,11 @@ public class StudentService {
         jsonObject.put("name",student.getName());
         jsonObject.put("email",student.getEmail());
 
-        try (FileWriter fileWriter = new FileWriter("SingleStudentBySearch.txt")) {
-            fileWriter.write(jsonObject.toJSONString());
+        try (FileWriter fileWriter = new FileWriter("SelectedStudent.txt",true)) {
+            fileWriter.write(jsonObject.toJSONString()+"\n");
             fileWriter.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         saveAllStudents();
@@ -154,8 +122,8 @@ public class StudentService {
         jsonObject.put("name",student.getName());
         jsonObject.put("email",student.getEmail());
 
-        try (FileWriter fileWriter = new FileWriter("SingleStudentByPost.txt")) {
-            fileWriter.write(jsonObject.toJSONString());
+        try (FileWriter fileWriter = new FileWriter("AddedStudent.txt",true)) {
+            fileWriter.write(jsonObject.toJSONString()+"\n");
             fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -169,13 +137,27 @@ public class StudentService {
         jsonObject.put("name",student.getName());
         jsonObject.put("email",student.getEmail());
 
-        try (FileWriter fileWriter = new FileWriter("SingleStudentByUpdate.txt")) {
-            fileWriter.write(jsonObject.toJSONString());
+        try (FileWriter fileWriter = new FileWriter("UpdatedStudent.txt",true)) {
+            fileWriter.write(jsonObject.toJSONString()+"\n");
             fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         saveAllStudents();
+    }
+
+    public void removeOneStudent(Student student){
+       JSONObject object = new JSONObject();
+       object.put("id",student.getId());
+       object.put("name",student.getName());
+       object.put("email",student.getEmail());
+        try {
+            FileWriter fileWriter = new FileWriter("RemovedStudent",true);
+            fileWriter.write(object.toJSONString()+"\n");
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void saveAllStudents(){

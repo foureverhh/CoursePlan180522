@@ -1,0 +1,4 @@
+{"name":null,"id":null,"email":null}
+{"name":"student1","id":"s1","email":"student1@gmail.com"}
+{"name":"student9","id":"s9","email":"student9@gmail.com"}
+{"name":null,"id":null,"email":null}
