@@ -1,0 +1,7 @@
+{"name":"student1","id":"s1","email":"student1@gmail.com"}
+{"name":"student2","id":"s2","email":"student2@gmail.com"}
+{"name":"student3","id":"s3","email":"student3@gmail.com"}
+{"name":"student4","id":"s4","email":"student4@gmail.com"}
+{"name":"student6","id":"s6","email":"student6@gmail.com"}
+{"name":"student7","id":"s7update","email":"student7@gmail.com"}
+{"name":"student8","id":"s8","email":"student8@gmail.com"}
