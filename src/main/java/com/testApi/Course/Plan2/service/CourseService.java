@@ -15,20 +15,18 @@ import java.util.*;
 @Service
 public class CourseService{
 
-    private StudentService studentService = new StudentService();
+   //private StudentService studentService = new StudentService();
     private List<Course> courses;
 
-/*
-    private List<Course> courses = new ArrayList<>(Arrays.asList(
+
+/*    private List<Course> courses = new ArrayList<>(Arrays.asList(
             new Course("c1","java","monday","teacher1","classroom1",studentService.getStudentsJava()),
             new Course("c2","c","tuesday","teacher2","classroom2",studentService.getStudentsC()),
             new Course("c3","c++","wednesday","teacher3","classroom3",studentService.getStudentsCPlus())
-    ));
-*/
-    public CourseService() {
-        courses = new ArrayList<>();
-        List<Student> students = new ArrayList<>();
+    ));*/
 
+   public CourseService() {
+        courses = new ArrayList<>();
         try {
             Scanner fileScanner = new Scanner(new File("Courses.txt"));
             while (fileScanner.hasNext()) {
@@ -44,8 +42,9 @@ public class CourseService{
                 String courseClassroom = (String) courseData.get("classroom");
 
                 JSONArray studentArrayData = (JSONArray) courseData.get("students");
-
+                List<Student> students = new ArrayList<>();
                 for (int i = 0; i < studentArrayData.size(); i++) {
+
                     JSONObject studentObjectData = (JSONObject) studentArrayData.get(i);
                     String studentId = (String) studentObjectData.get("id");
                     String studentName = (String) studentObjectData.get("name");
@@ -123,7 +122,10 @@ public class CourseService{
      }
 
     public void addCourse(Course course) {
-         courses.add(course);
+        addOneCourse(course);
+        saveAllCourses();
+        courses.add(course);
+
     }
 
     public void updateCourse(String courseId,Course course) {
@@ -140,11 +142,38 @@ public class CourseService{
          }
     }
 
+    public void addOneCourse(Course course){
+        try {
+            FileWriter fileWriter = new FileWriter("NewCourse.txt");
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id",course.getId());
+            jsonObject.put("name",course.getName());
+            jsonObject.put("time",course.getTime());
+            jsonObject.put("teachers",course.getTeachers());
+            jsonObject.put("classroom",course.getClassroom());
+            JSONArray students = new JSONArray();
+            for(Student student:course.getStudents()){
+                JSONObject studentObj = new JSONObject();
+                studentObj.put("id",student.getId());
+                studentObj.put("name",student.getName());
+                studentObj.put("email",student.getEmail());
+                students.add(studentObj);
+            }
+            jsonObject.put("students",students);
+            fileWriter.write(jsonObject.toJSONString()+"\n");
+            fileWriter.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public void saveAllCourses() {
 
+        System.out.println("save all courses");
         try {
             FileWriter fileWriter = new FileWriter("Courses.txt");
             //loop each course
+
             for(Course  course : courses){
                 JSONObject jsonObjectCourse = new JSONObject();
                 jsonObjectCourse.put("id",course.getId());
@@ -153,9 +182,11 @@ public class CourseService{
                 jsonObjectCourse.put("teachers",course.getTeachers());
                 jsonObjectCourse.put("classroom",course.getClassroom());
                 //loop for students inside a course
-                JSONArray jsonArrayStudents = new JSONArray();
+
+
                 //for(int i = 0; i<studentService.getStudents().size();i++) {
-                    for(Student student: studentService.getStudents()) {
+                  JSONArray jsonArrayStudents = new JSONArray();
+                    for(Student student: course.getStudents()) {
                         JSONObject studentInsideCourse = new JSONObject();
                         studentInsideCourse.put("id", student.getId());
                         studentInsideCourse.put("name",student.getName());
@@ -166,7 +197,8 @@ public class CourseService{
                 jsonObjectCourse.put("students",jsonArrayStudents);
                 fileWriter.write(jsonObjectCourse.toJSONString()+"\n");
             }
-fileWriter.close();
+
+            fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
